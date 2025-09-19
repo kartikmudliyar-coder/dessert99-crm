@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/client"; // updated for @supabase/ssr
 import AuthGuard from "@/components/AuthGuard";
 import Navbar from "@/components/Navbar";
 
@@ -13,12 +13,15 @@ export default function Dashboard() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data } = await supabase.auth.getUser();
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
 
-      if (!data?.user) {
+      if (error || !user) {
         router.replace("/login");
       } else {
-        setUserEmail(data.user.email);
+        setUserEmail(user.email ?? "Unknown User");
       }
     };
 

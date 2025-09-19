@@ -1,13 +1,22 @@
-"use client"
+"use client";
 
-import { Auth } from "@supabase/auth-ui-react"
-import { ThemeSupa } from "@supabase/auth-ui-shared"
-import { supabase } from "@/lib/supabaseClient"
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { createClient } from "@/utils/supabase/client"; // ✅ updated to use @supabase/ssr
 
 export default function LoginPage() {
+  const supabase = createClient();
+
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />
+    <div className="flex items-center justify-center h-screen">
+      <div className="w-full max-w-md p-6 rounded-xl shadow-lg bg-white">
+        <h1 className="text-2xl font-bold mb-4 text-center">Dessert99 CRM Login</h1>
+        <Auth
+          supabaseClient={supabase}
+          appearance={{ theme: ThemeSupa }}
+          providers={[]} // add ["google", "github"] etc. if you want
+        />
+      </div>
     </div>
-  )
+  );
 }
