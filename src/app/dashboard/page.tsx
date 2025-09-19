@@ -1,45 +1,43 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { supabase } from "@/lib/supabaseClient"
-import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 
-export default function DashboardPage() {
-  const router = useRouter()
-  const [userEmail, setUserEmail] = useState<string | null>(null)
+export default function Dashboard() {
+  const router = useRouter();
+  const supabase = createClient();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getUser();
 
-      if (!user) {
-        router.push("/login")
+      if (!data?.user) {
+        router.replace("/login");
       } else {
-        // ✅ FIXED: prevents TypeScript error
-        setUserEmail(user.email ?? null)
+        setUserEmail(data.user.email);
       }
-    }
+    };
 
-    getUser()
-  }, [router])
+    checkUser();
+  }, [router, supabase]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push("/login")
-  }
+    await supabase.auth.signOut();
+    router.replace("/login");
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-      <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md text-center">
-        <h1 className="text-xl font-semibold mb-4">Dashboard</h1>
-        <p className="mb-4">Welcome, {userEmail || "loading..."} 👋</p>
-        <button
-          onClick={handleLogout}
-          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-        >
-          Logout
-        </button>
-      </div>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
+      {userEmail && <p className="mb-4">Welcome, {userEmail}!</p>}
+      <button
+        onClick={handleLogout}
+        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+      >
+        Logout
+      </button>
     </div>
-  )
+  );
 }
