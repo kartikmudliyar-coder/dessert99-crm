@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import AuthGuard from "@/components/AuthGuard";
+import Navbar from "@/components/Navbar";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -29,15 +31,24 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-      {userEmail && <p className="mb-4">Welcome, {userEmail}!</p>}
-      <button
-        onClick={handleLogout}
-        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-      >
-        Logout
-      </button>
-    </div>
+    <AuthGuard>
+      <div className="h-screen flex flex-col">
+        {/* Navbar always at the top */}
+        <Navbar />
+
+        {/* Dashboard content */}
+        <div className="flex-1 flex flex-col items-center justify-center">
+          <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
+          {userEmail && <p className="mb-4">Welcome, {userEmail} 🎉</p>}
+
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </AuthGuard>
   );
 }
