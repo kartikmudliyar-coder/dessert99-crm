@@ -1,8 +1,10 @@
-export default function Home() {
+export default function HomePage() {
   return (
     <main className="flex min-h-screen items-center justify-center">
-      <h1 className="text-3xl font-bold">Dessert99 CRM</h1>
-      <p className="text-gray-500">Welcome! Please log in to continue.</p>
+      <div className="text-center">
+        <h1 className="text-3xl font-bold">Welcome to Dessert99 CRM</h1>
+        <p className="mt-2 text-gray-600">Please <a href="/login" className="text-blue-600 underline">login</a> to continue.</p>
+      </div>
     </main>
   )
 }
