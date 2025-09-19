@@ -1,8 +1,22 @@
-import type { Database } from '@/lib/database.types'
+// src/types/supabase.ts
+export interface Customer {
+  id: string;
+  name: string;
+  phone?: string | null;
+  email?: string | null;
+  visits: number;
+  created_at: string;
+}
 
-export type { Database }  // 👈 re-export Database here
-
-// Export row types for each table
-export type Profile = Database['public']['Tables']['profiles']['Row']
-export type Order   = Database['public']['Tables']['orders']['Row']
-export type Product = Database['public']['Tables']['products']['Row']
+export interface Order {
+  id: string;
+  franchise_id?: string | null;
+  customer_id?: string | null;
+  customer_name?: string | null;
+  item: string;
+  qty: number;
+  price: number;
+  status: string;
+  created_by?: string | null;
+  created_at: string;
+}
