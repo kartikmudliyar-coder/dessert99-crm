@@ -1,27 +1,22 @@
+"use client";
+
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { createClient } from "@/utils/supabase/client";
+
 export default function LoginPage() {
+  const supabase = createClient();
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="p-6 rounded-lg shadow bg-white w-80">
-        <h2 className="text-xl font-semibold mb-4">Login</h2>
-        <form className="flex flex-col space-y-3">
-          <input
-            type="email"
-            placeholder="Email"
-            className="border rounded p-2"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="border rounded p-2"
-          />
-          <button
-            type="submit"
-            className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-          >
-            Sign In
-          </button>
-        </form>
+    <div className="flex items-center justify-center h-screen">
+      <div className="w-full max-w-md p-6 rounded-xl shadow-lg bg-white">
+        <h1 className="text-2xl font-bold mb-4 text-center">Dessert99 CRM Login</h1>
+        <Auth
+          supabaseClient={supabase}
+          appearance={{ theme: ThemeSupa }}
+          providers={[]}
+        />
       </div>
-    </main>
-  )
+    </div>
+  );
 }
