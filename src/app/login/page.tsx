@@ -1,22 +1,53 @@
+// src/app/login/page.tsx
 "use client";
 
-import { Auth } from "@supabase/auth-ui-react";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { createClient } from "@/utils/supabase/client"; // ✅ updated to use @supabase/ssr
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createBrowserClient } from "@/utils/supabase/client";
 
 export default function LoginPage() {
-  const supabase = createClient();
+  const router = useRouter();
+  const supabase = createBrowserClient();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const handleLogin = async () => {
+    setError(null);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      setError(error.message);
+    } else {
+      router.replace("/dashboard");
+    }
+  };
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="w-full max-w-md p-6 rounded-xl shadow-lg bg-white">
-        <h1 className="text-2xl font-bold mb-4 text-center">Dessert99 CRM Login</h1>
-        <Auth
-          supabaseClient={supabase}
-          appearance={{ theme: ThemeSupa }}
-          providers={[]} // add ["google", "github"] etc. if you want
-        />
-      </div>
+    <div className="h-screen flex flex-col items-center justify-center">
+      <h1 className="text-3xl font-bold mb-4">Login</h1>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        className="mb-2 p-2 border rounded"
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        className="mb-2 p-2 border rounded"
+      />
+      <button
+        onClick={handleLogin}
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        Login
+      </button>
+      {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
   );
 }
