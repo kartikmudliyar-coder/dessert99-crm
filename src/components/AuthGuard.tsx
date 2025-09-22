@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createBrowserClient } from "@/utils/supabase/client";
+import { createClientBrowser } from "@/utils/supabase/client";
 
 interface AuthGuardProps {
   children: ReactNode;
@@ -10,24 +10,22 @@ interface AuthGuardProps {
 
 export default function AuthGuard({ children }: AuthGuardProps) {
   const router = useRouter();
-  const supabase = createBrowserClient();
-  const [loading, setLoading] = useState(true);
+  const [authorized, setAuthorized] = useState(false);
+  const supabase = createClientBrowser();
 
   useEffect(() => {
-    const checkUser = async () => {
-      const { data: { user }, error } = await supabase.auth.getUser();
+    const checkAuth = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-      if (error || !user) {
-        router.replace("/login");
-      } else {
-        setLoading(false);
-      }
+      if (!user) router.replace("/login");
+      else setAuthorized(true);
     };
 
-    checkUser();
+    checkAuth();
   }, [router, supabase]);
 
-  if (loading) return <p>Loading...</p>;
-
+  if (!authorized) return <p>Loading...</p>;
   return <>{children}</>;
 }
