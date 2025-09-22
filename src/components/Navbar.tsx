@@ -1,20 +1,20 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { createBrowserClient } from "@/utils/supabase/client";
+import { useEffect, useState } from "react";
+import { createClientBrowser } from "@/utils/supabase/client";
 
 export default function Navbar() {
   const router = useRouter();
-  const supabase = createBrowserClient();
+  const supabase = createClientBrowser();
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUserEmail(user?.email ?? null);
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUserEmail(data.user?.email ?? null);
     };
-    fetchUser();
+    getUser();
   }, [supabase]);
 
   const handleLogout = async () => {
@@ -23,12 +23,16 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="flex justify-between items-center p-4 bg-gray-100">
-      <div>Dessert99 CRM</div>
-      <div className="flex gap-4 items-center">
-        {userEmail && <span>{userEmail}</span>}
-        <button onClick={handleLogout}>Logout</button>
-      </div>
+    <nav className="bg-gray-800 text-white p-4 flex justify-between">
+      <span>Dessert99 CRM</span>
+      {userEmail && (
+        <div>
+          <span className="mr-4">{userEmail}</span>
+          <button onClick={handleLogout} className="bg-red-500 px-2 py-1 rounded">
+            Logout
+          </button>
+        </div>
+      )}
     </nav>
   );
 }
