@@ -1,12 +1,3 @@
-// src/lib/database.types.ts
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
-
 export type Database = {
   public: {
     Tables: {
@@ -40,14 +31,14 @@ export type Database = {
         }
       }
       orders: {
-        Row: { /* your schema */ }
-        Insert: { /* your schema */ }
-        Update: { /* your schema */ }
+        Row: object
+        Insert: object
+        Update: object
       }
       products: {
-        Row: { /* your schema */ }
-        Insert: { /* your schema */ }
-        Update: { /* your schema */ }
+        Row: object
+        Insert: object
+        Update: object
       }
     }
   }
