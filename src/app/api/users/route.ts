@@ -1,11 +1,10 @@
 // src/app/api/users/route.ts
-import { supabaseServerClient } from "@/lib/supabaseServer";
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import { supabaseServerClient } from '@/lib/supabaseServer';
 
 export async function GET() {
-  const supabase = supabaseServerClient();
-  const { data, error } = await supabase.from("users").select("*");
-
+  const supabase = await supabaseServerClient();
+  const { data, error } = await supabase.from('profiles').select('*').limit(100);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ users: data });
+  return NextResponse.json(data ?? []);
 }

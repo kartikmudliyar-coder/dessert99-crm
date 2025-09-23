@@ -1,64 +1,27 @@
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClientBrowser } from "@/utils/supabase/client";
+// src/app/login/page.tsx
+import { loginAction } from './actions';
 
 export default function LoginPage() {
-  const router = useRouter();
-  const supabase = createClientBrowser();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const handleLogin = async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (error) {
-      setError(error.message);
-    } else {
-      router.replace("/dashboard");
-    }
-  };
-
   return (
-    <div className="h-screen flex items-center justify-center">
-      <form onSubmit={handleLogin} className="w-full max-w-sm p-6 bg-white rounded shadow">
-        <h1 className="text-2xl font-bold mb-4">Sign in — Dessert99</h1>
+    <div className="min-h-screen flex items-center justify-center p-6">
+      <div className="w-full max-w-md bg-white p-6 rounded shadow">
+        <h2 className="text-2xl font-semibold mb-4">Dessert99 — Sign in</h2>
 
-        {error && <div className="mb-3 text-red-600">{error}</div>}
+        <form action={loginAction}>
+          <label className="block mb-2">
+            <span className="text-sm">Email</span>
+            <input name="email" type="email" required className="mt-1 block w-full p-2 border rounded" />
+          </label>
 
-        <input
-          className="w-full mb-3 p-2 border rounded"
-          placeholder="Email"
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          className="w-full mb-3 p-2 border rounded"
-          placeholder="Password"
-          type="password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <button type="submit" className="mt-4 px-4 py-2 bg-blue-600 text-white rounded">
+            Send magic link
+          </button>
+        </form>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-          disabled={loading}
-        >
-          {loading ? "Signing in…" : "Sign in"}
-        </button>
-      </form>
+        <p className="text-sm mt-4 text-gray-500">
+          This sends a magic-link email (email-based signin). You can replace this with password signin or the Auth UI later.
+        </p>
+      </div>
     </div>
   );
 }

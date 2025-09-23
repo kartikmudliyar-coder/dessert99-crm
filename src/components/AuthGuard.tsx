@@ -1,43 +1,33 @@
-"use client";
+// src/components/AuthGuard.tsx
+'use client';
 
-import { ReactNode, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClientBrowser } from "@/utils/supabase/client";
+import React, { ReactNode, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClientBrowser } from '@/utils/supabase/client';
 
-interface AuthGuardProps {
-  children: ReactNode;
-}
-
-
-export default function AuthGuard({ children }: AuthGuardProps) {
+export default function AuthGuard({ children }: { children: ReactNode }) {
   const router = useRouter();
   const supabase = createClientBrowser();
-  const [authorized, setAuthorized] = useState(false);
+  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
     let mounted = true;
-    const check = async () => {
-      const { data, error } = await supabase.auth.getUser();
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getUser();
       if (!mounted) return;
-      if (error || !data?.user) {
-        router.replace("/login");
+      if (!data?.user) {
+        router.replace('/login');
       } else {
-        setAuthorized(true);
+        setChecking(false);
       }
     };
-    check();
+    checkUser();
     return () => {
       mounted = false;
     };
   }, [router, supabase]);
 
-  if (!authorized) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p>Loading…</p>
-      </div>
-    );
-  }
+  if (checking) return <div className="p-6">Checking authentication…</div>;
 
   return <>{children}</>;
 }

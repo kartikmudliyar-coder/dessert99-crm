@@ -1,31 +1,17 @@
-'use client'
-import React, { ReactNode } from "react";
+// src/app/layout.tsx
+import './globals.css';
+import type { ReactNode } from 'react';
+
+export const metadata = {
+  title: 'Dessert99 CRM',
+};
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <ErrorBoundary>
-          {children}
-        </ErrorBoundary>
+        {children}
       </body>
     </html>
-  )
-}
-
-// Very simple error boundary
-class ErrorBoundary extends React.Component<{ children: ReactNode }, { hasError: boolean }> {
-  constructor(props: any) {
-    super(props)
-    this.state = { hasError: false }
-  }
-  static getDerivedStateFromError() {
-    return { hasError: true }
-  }
-  componentDidCatch(error: any) {
-    console.error("App Error:", error)
-  }
-  render() {
-    if (this.state.hasError) return <h2>Something went wrong.</h2>
-    return this.props.children
-  }
+  );
 }

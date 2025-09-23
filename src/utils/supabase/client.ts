@@ -1,9 +1,18 @@
 // src/utils/supabase/client.ts
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from '@supabase/ssr';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+/**
+ * Browser/client helper to be used in "use client" files.
+ * Exports:
+ *  - createClientBrowser()  // preferred
+ *  - createClient()         // alias (backwards compat)
+ */
+export function createClientBrowser() {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
+  );
+}
 
-export const createClientBrowser = () => {
-  return createClient(supabaseUrl, supabaseAnonKey);
-};
+// convenient alias (many files import `createClient`)
+export const createClient = createClientBrowser;
