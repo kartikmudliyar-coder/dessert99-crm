@@ -1,39 +1,29 @@
-"use client";
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
+import Navbar from '@/components/Navbar';
+import { redirect } from 'next/navigation';
 
-import { useEffect, useState } from "react";
-import AuthGuard from "@/components/AuthGuard";
-import Navbar from "@/components/Navbar";
-import { createClientBrowser } from "@/utils/supabase/client";
+export default async function CustomersPage() {
+  const supabase = createSupabaseServerClient();
 
-type Customer = { id: string; name: string; phone?: string };
+  const { data: { session } } = await supabase.auth.getSession();
 
-export default function CustomersPage() {
-  const supabase = createClientBrowser();
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  if (!session) redirect('/login');
 
-  useEffect(() => {
-    const fetch = async () => {
-      const { data, error } = await supabase.from("customers").select("*");
-      if (!error && data) setCustomers(data as Customer[]);
-    };
-    fetch();
-  }, [supabase]);
+  const { data: customers } = await supabase.from('profiles').select('*');
 
   return (
-    <AuthGuard>
-      <div className="h-screen flex flex-col">
-        <Navbar />
-        <main className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Customers</h2>
-          <ul>
-            {customers.map((c) => (
-              <li key={c.id} className="mb-2">
-                {c.name} {c.phone && `• ${c.phone}`}
-              </li>
-            ))}
-          </ul>
-        </main>
+    <div className="h-screen flex flex-col">
+      <Navbar />
+      <div className="flex-1 p-4">
+        <h1 className="text-3xl font-bold mb-4">Customers</h1>
+        <ul>
+          {customers?.map((c: any) => (
+            <li key={c.id}>
+              {c.full_name} ({c.email ?? 'No email'})
+            </li>
+          ))}
+        </ul>
       </div>
-    </AuthGuard>
+    </div>
   );
 }
