@@ -8,24 +8,36 @@ interface AuthGuardProps {
   children: ReactNode;
 }
 
+
 export default function AuthGuard({ children }: AuthGuardProps) {
   const router = useRouter();
-  const [authorized, setAuthorized] = useState(false);
   const supabase = createClientBrowser();
+  const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) router.replace("/login");
-      else setAuthorized(true);
+    let mounted = true;
+    const check = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (!mounted) return;
+      if (error || !data?.user) {
+        router.replace("/login");
+      } else {
+        setAuthorized(true);
+      }
     };
-
-    checkAuth();
+    check();
+    return () => {
+      mounted = false;
+    };
   }, [router, supabase]);
 
-  if (!authorized) return <p>Loading...</p>;
+  if (!authorized) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>Loading…</p>
+      </div>
+    );
+  }
+
   return <>{children}</>;
 }
