@@ -1,48 +1,53 @@
-// src/app/orders/new/page.tsx
-'use client'
-import { useState } from 'react'
-import { createClient } from '@/utils/supabase/client'
-import { useRouter } from 'next/navigation'
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Navbar from "@/components/Navbar";
+import AuthGuard from "@/components/AuthGuard";
+import { createClientBrowser } from "@/utils/supabase/client";
 
 export default function NewOrderPage() {
-  const supabase = createClient()
-  const router = useRouter()
-  const [customerName, setCustomerName] = useState('')
-  const [item, setItem] = useState('')
-  const [qty, setQty] = useState(1)
-  const [price, setPrice] = useState(0)
-  const [loading, setLoading] = useState(false)
+  const supabase = createClientBrowser();
+  const router = useRouter();
+  const [item, setItem] = useState("");
+  const [qty, setQty] = useState(1);
 
-  const create = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    const user = await supabase.auth.getUser()
-    const created_by = user?.data?.user?.id ?? null
-    const franchise_id = user?.data?.user ? (await supabase.from('profiles').select('franchise_id').eq('id', created_by).single()).data?.franchise_id : null
-
-    const { error } = await supabase.from('orders').insert([{
-      franchise_id,
-      customer_name: customerName,
-      item,
-      qty,
-      price,
-      created_by
-    }])
-    setLoading(false)
-    if (error) return alert(error.message)
-    router.push('/orders')
-  }
+  const submit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    const { error } = await supabase.from("orders").insert([{ item, qty }]);
+    if (!error) {
+      router.push("/orders");
+    } else {
+      alert(error.message);
+    }
+  };
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">New Order</h2>
-      <form onSubmit={create} className="space-y-3 max-w-md">
-        <input value={customerName} onChange={e => setCustomerName(e.target.value)} placeholder="Customer name" className="w-full p-2 border rounded" />
-        <input value={item} onChange={e => setItem(e.target.value)} placeholder="Item" className="w-full p-2 border rounded" />
-        <input type="number" value={qty} onChange={e => setQty(Number(e.target.value))} className="w-full p-2 border rounded" />
-        <input type="number" value={price} onChange={e => setPrice(Number(e.target.value))} className="w-full p-2 border rounded" />
-        <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded">{loading ? 'Creating...' : 'Create Order'}</button>
-      </form>
-    </div>
-  )
+    <AuthGuard>
+      <div className="h-screen flex flex-col">
+        <Navbar />
+        <main className="p-6 max-w-md mx-auto">
+          <h2 className="text-xl font-semibold mb-4">New Order</h2>
+          <form onSubmit={submit} className="flex flex-col gap-3">
+            <input
+              value={item}
+              onChange={(e) => setItem(e.target.value)}
+              placeholder="Item"
+              className="p-2 border rounded"
+              required
+            />
+            <input
+              type="number"
+              value={qty}
+              onChange={(e) => setQty(Number(e.target.value))}
+              className="p-2 border rounded"
+              min={1}
+              required
+            />
+            <button className="bg-blue-600 text-white px-4 py-2 rounded">Create</button>
+          </form>
+        </main>
+      </div>
+    </AuthGuard>
+  );
 }
