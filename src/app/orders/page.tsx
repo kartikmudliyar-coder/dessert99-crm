@@ -1,39 +1,29 @@
-"use client";
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
+import Navbar from '@/components/Navbar';
+import { redirect } from 'next/navigation';
 
-import { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
-import AuthGuard from "@/components/AuthGuard";
-import { createClientBrowser } from "@/utils/supabase/client";
+export default async function OrdersPage() {
+  const supabase = createSupabaseServerClient();
 
-type Order = { id: string; item: string; qty: number };
+  const { data: { session } } = await supabase.auth.getSession();
 
-export default function OrdersPage() {
-  const supabase = createClientBrowser();
-  const [orders, setOrders] = useState<Order[]>([]);
+  if (!session) redirect('/login');
 
-  useEffect(() => {
-    const fetch = async () => {
-      const { data, error } = await supabase.from("orders").select("*");
-      if (!error && data) setOrders(data as Order[]);
-    };
-    fetch();
-  }, [supabase]);
+  const { data: orders } = await supabase.from('orders').select('*');
 
   return (
-    <AuthGuard>
-      <div className="h-screen flex flex-col">
-        <Navbar />
-        <main className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Orders</h2>
-          <ul>
-            {orders.map((o) => (
-              <li key={o.id}>
-                {o.item} — {o.qty}
-              </li>
-            ))}
-          </ul>
-        </main>
+    <div className="h-screen flex flex-col">
+      <Navbar />
+      <div className="flex-1 p-4">
+        <h1 className="text-3xl font-bold mb-4">Orders</h1>
+        <ul>
+          {orders?.map((o: any) => (
+            <li key={o.id}>
+              Order #{o.id} - {o.status}
+            </li>
+          ))}
+        </ul>
       </div>
-    </AuthGuard>
+    </div>
   );
 }
