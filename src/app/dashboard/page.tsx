@@ -1,50 +1,30 @@
-"use client";
+// src/app/dashboard/page.tsx
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
+import Navbar from '@/components/Navbar';
+import { redirect } from 'next/navigation';
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClientBrowser } from "@/utils/supabase/client";
-import AuthGuard from "@/components/AuthGuard";
-import Navbar from "@/components/Navbar";
+export default async function DashboardPage() {
+  const supabase = createSupabaseServerClient();
 
-export default function Dashboard() {
-  const router = useRouter();
-  const supabase = createClientBrowser();
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const { data: { session } } = await supabase.auth.getSession();
 
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data: { user }, error } = await supabase.auth.getUser();
-
-      if (error || !user) {
-        router.replace("/login");
-      } else {
-        setUserEmail(user.email ?? "Unknown User");
-      }
-    };
-
-    checkUser();
-  }, [router, supabase]);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.replace("/login");
-  };
+  if (!session) redirect('/login');
 
   return (
-    <AuthGuard>
-      <div className="h-screen flex flex-col">
-        <Navbar />
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-          {userEmail && <p className="mb-4">Welcome, {userEmail} 🎉</p>}
+    <div className="h-screen flex flex-col">
+      <Navbar />
+      <div className="flex-1 flex flex-col items-center justify-center">
+        <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
+        <p className="mb-4">Welcome, {session.user.email} 🎉</p>
+        <form action="/api/logout" method="POST">
           <button
-            onClick={handleLogout}
+            type="submit"
             className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
           >
             Logout
           </button>
-        </div>
+        </form>
       </div>
-    </AuthGuard>
+    </div>
   );
 }
