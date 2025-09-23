@@ -1,16 +1,23 @@
-// src/app/login/actions.ts
-import { supabaseServerClient } from '@/lib/supabaseServer';
+'use client';
 
-export async function loginAction(formData: FormData) {
-  'use server';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+
+const supabase = createClientComponentClient();
+
+export async function loginAction(formData: FormData): Promise<void> {
   const email = formData.get('email')?.toString();
-  if (!email) throw new Error('Email is required');
+  const password = formData.get('password')?.toString();
 
-  const supabase = await supabaseServerClient();
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-  });
+  if (!email || !password) {
+    alert('Email and password are required');
+    return;
+  }
 
-  if (error) throw new Error(error.message);
-  return { ok: true };
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    alert(`Login failed: ${error.message}`);
+  } else {
+    window.location.href = '/dashboard';
+  }
 }
