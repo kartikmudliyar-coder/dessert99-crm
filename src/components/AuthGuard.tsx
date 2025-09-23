@@ -1,33 +1,30 @@
-// src/components/AuthGuard.tsx
-'use client';
+"use client";
 
-import React, { ReactNode, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClientBrowser } from '@/utils/supabase/client';
+import { ReactNode, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClientBrowser } from "@/utils/supabase/client";
 
-export default function AuthGuard({ children }: { children: ReactNode }) {
+interface AuthGuardProps {
+  children: ReactNode;
+}
+
+export default function AuthGuard({ children }: AuthGuardProps) {
   const router = useRouter();
   const supabase = createClientBrowser();
-  const [checking, setChecking] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    let mounted = true;
     const checkUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (!mounted) return;
-      if (!data?.user) {
-        router.replace('/login');
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.replace("/login");
       } else {
-        setChecking(false);
+        setIsAuthenticated(true);
       }
     };
     checkUser();
-    return () => {
-      mounted = false;
-    };
   }, [router, supabase]);
 
-  if (checking) return <div className="p-6">Checking authentication…</div>;
-
+  if (!isAuthenticated) return null;
   return <>{children}</>;
 }
