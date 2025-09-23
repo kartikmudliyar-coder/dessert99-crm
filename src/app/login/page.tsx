@@ -10,10 +10,16 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleLogin = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    setLoading(true);
+    setError(null);
+
     const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
     if (error) {
       setError(error.message);
     } else {
@@ -22,26 +28,37 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-3xl font-bold mb-4">Login</h1>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="mb-2 p-2 border rounded"
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="mb-2 p-2 border rounded"
-      />
-      <button onClick={handleLogin} className="px-4 py-2 bg-blue-500 text-white rounded">
-        Login
-      </button>
-      {error && <p className="text-red-500 mt-2">{error}</p>}
+    <div className="h-screen flex items-center justify-center">
+      <form onSubmit={handleLogin} className="w-full max-w-sm p-6 bg-white rounded shadow">
+        <h1 className="text-2xl font-bold mb-4">Sign in — Dessert99</h1>
+
+        {error && <div className="mb-3 text-red-600">{error}</div>}
+
+        <input
+          className="w-full mb-3 p-2 border rounded"
+          placeholder="Email"
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          className="w-full mb-3 p-2 border rounded"
+          placeholder="Password"
+          type="password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          disabled={loading}
+        >
+          {loading ? "Signing in…" : "Sign in"}
+        </button>
+      </form>
     </div>
   );
 }
