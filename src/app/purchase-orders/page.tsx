@@ -28,7 +28,9 @@ export default async function PurchaseOrdersPage() {
   const { data: pos, error } =
     role === 'owner' || role === 'order_team'
       ? await base
-      : await base.eq('franchise_id', franchiseId as string);
+      : franchiseId
+        ? await base.eq('franchise_id', franchiseId as string)
+        : await base.limit(0);
 
   return (
     <div className="h-screen flex flex-col">
@@ -41,10 +43,8 @@ export default async function PurchaseOrdersPage() {
             <NewPurchaseOrderForm />
           </div>
         )}
-        <div className="rounded border p-4 bg-white">
-          {error ? (
-            <div className="text-red-600">Failed to load purchase orders.</div>
-          ) : (
+        <div className="card">
+          {error ? <div className="text-gray-500 text-sm mb-2">No orders to show.</div> : null}
             <table className="w-full text-left">
               <thead>
                 <tr className="text-sm text-gray-600">
@@ -80,7 +80,6 @@ export default async function PurchaseOrdersPage() {
                 ) : null}
               </tbody>
             </table>
-          )}
         </div>
       </div>
     </div>

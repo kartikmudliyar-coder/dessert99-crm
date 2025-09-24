@@ -56,7 +56,7 @@ export default function Navbar() {
           {role && ['owner','franchise_owner','shop_user'].includes(role) ? <Link href="/inventory">Inventory</Link> : null}
           {role && ['owner','franchise_owner','shop_user'].includes(role) ? <Link href="/tasks">Tasks</Link> : null}
           {/* Purchase Orders hidden from shop_user; shown to owner, franchise_owner, order_team */}
-          {role && ['owner','franchise_owner','order_team'].includes(role) ? <Link href="/purchase-orders">Purchase Orders</Link> : null}
+          {role && ['owner','franchise_owner','order_team'].includes(role) ? <Link href="/purchase-orders">Raw Material Orders</Link> : null}
           {/* Notifications visible to all */}
           <Link href="/notifications">Notifications</Link>
           {/* Attendance for shop users and above */}

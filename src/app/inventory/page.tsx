@@ -34,7 +34,9 @@ export default async function InventoryPage() {
   const scopedFranchise = scope || franchiseId;
   const { data: rows, error } = isOwner && !scopedFranchise
     ? await baseQuery
-    : await baseQuery.eq('franchise_id', scopedFranchise as string);
+    : scopedFranchise
+      ? await baseQuery.eq('franchise_id', scopedFranchise as string)
+      : await baseQuery.limit(0);
 
   return (
     <div className="h-screen flex flex-col">
@@ -42,10 +44,8 @@ export default async function InventoryPage() {
       <div className="p-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-semibold mb-4">Inventory</h1>
         <p className="text-sm text-gray-600 mb-6">Franchise: {isOwner ? (scope || 'all') : (profile?.franchise_id ?? 'n/a')}</p>
-        <div className="rounded border p-4 bg-white">
-          {error ? (
-            <div className="text-red-600">Failed to load inventory.</div>
-          ) : (
+        <div className="card">
+          {error ? <div className="text-gray-500 text-sm mb-2">No inventory to show.</div> : null}
             <table className="w-full text-left">
               <thead>
                 <tr className="text-sm text-gray-600">
@@ -78,7 +78,6 @@ export default async function InventoryPage() {
                 ) : null}
               </tbody>
             </table>
-          )}
         </div>
       </div>
     </div>

@@ -32,10 +32,8 @@ export default async function NotificationsPage() {
         <div className="mb-6">
           <Composer />
         </div>
-        <div className="rounded border p-4 bg-white">
-          {error ? (
-            <div className="text-red-600">Failed to load notifications.</div>
-          ) : (
+        <div className="card">
+          {error ? <div className="text-gray-500 text-sm mb-2">No notifications to show.</div> : null}
             <ul className="divide-y">
               {notes?.map((n) => (
                 <li key={n.id} className="py-3">
@@ -51,7 +49,6 @@ export default async function NotificationsPage() {
                 <li className="py-3 text-gray-500">No notifications.</li>
               ) : null}
             </ul>
-          )}
         </div>
       </div>
     </div>

@@ -35,8 +35,8 @@ export default async function RecipesPage() {
         )}
         <div className="card">
           {error ? (
-            <div className="text-red-600">Failed to load recipes.</div>
-          ) : (
+            <div className="text-gray-500 text-sm mb-2">No recipes to show.</div>
+          ) : null}
             <ul className="divide-y">
               {recipes?.map((r) => (
                 <li key={r.id} className="py-3">
@@ -47,7 +47,7 @@ export default async function RecipesPage() {
                       {/* Signed URL fetch is done client-side below for performance; fallback */}
                       <Image src={`/api/recipes/image?id=${r.id}`} alt={r.name} fill className="object-cover rounded" />
                       <div className="absolute -bottom-8 left-0">
-                        <RecipeImageActions id={r.id} imagePath={r.image_path} />
+                        {profile?.role === 'owner' ? <RecipeImageActions id={r.id} imagePath={r.image_path} /> : null}
                       </div>
                     </div>
                   ) : null}
@@ -57,7 +57,6 @@ export default async function RecipesPage() {
                 <li className="py-3 text-gray-500">No recipes yet.</li>
               ) : null}
             </ul>
-          )}
         </div>
       </div>
     </div>
