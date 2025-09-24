@@ -16,10 +16,12 @@ export default async function InventoryPage() {
 
   const franchiseId = profile?.franchise_id ?? null;
   const isOwner = profile?.role === 'owner';
+  type InventoryItem = { name: string | null; sku: string | null; unit: string | null };
   type InventoryRow = {
     qty: number;
     last_updated: string;
-    inventory_items: { name: string | null; sku: string | null; unit: string | null } | null;
+    // Some Supabase versions may return related rows as an array; support both
+    inventory_items: InventoryItem | InventoryItem[] | null;
   };
   const baseQuery = supabase
     .from('inventory_levels')
@@ -51,15 +53,20 @@ export default async function InventoryPage() {
                 </tr>
               </thead>
               <tbody>
-                {rows?.map((r: InventoryRow, idx: number) => (
+                {rows?.map((r: InventoryRow, idx: number) => {
+                  const item = Array.isArray(r.inventory_items)
+                    ? (r.inventory_items[0] ?? null)
+                    : r.inventory_items;
+                  return (
                   <tr key={idx} className="border-t">
-                    <td className="py-2">{r.inventory_items?.name}</td>
-                    <td className="py-2">{r.inventory_items?.sku ?? '—'}</td>
+                    <td className="py-2">{item?.name}</td>
+                    <td className="py-2">{item?.sku ?? '—'}</td>
                     <td className="py-2">{r.qty}</td>
-                    <td className="py-2">{r.inventory_items?.unit ?? '—'}</td>
+                    <td className="py-2">{item?.unit ?? '—'}</td>
                     <td className="py-2 text-sm text-gray-600">{new Date(r.last_updated).toLocaleString()}</td>
                   </tr>
-                ))}
+                  );
+                })}
                 {rows?.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="py-3 text-gray-500">No inventory yet.</td>
