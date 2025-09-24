@@ -1,7 +1,8 @@
 // src/app/inventory/page.tsx
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import Navbar from '@/components/Navbar';
-import { redirect, cookies } from 'next/navigation';
+import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 
 export default async function InventoryPage() {
   const supabase = createSupabaseServerClient();

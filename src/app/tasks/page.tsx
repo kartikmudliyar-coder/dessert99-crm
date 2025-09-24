@@ -1,7 +1,8 @@
 // src/app/tasks/page.tsx
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import Navbar from '@/components/Navbar';
-import { redirect, cookies } from 'next/navigation';
+import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 import MarkDoneButton from './MarkDoneButton';
 
 export default async function TasksPage() {
