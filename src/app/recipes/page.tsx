@@ -1,6 +1,7 @@
 // src/app/recipes/page.tsx
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import Navbar from '@/components/Navbar';
+import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import NewRecipeForm from './NewRecipeForm';
 
@@ -41,7 +42,9 @@ export default async function RecipesPage() {
                   <div className="font-medium">{r.name}</div>
                   <div className="text-sm text-gray-600">{r.description ?? '—'}</div>
                   {r.image_url ? (
-                    <img src={r.image_url} alt={r.name} className="mt-2 h-24 w-24 object-cover rounded" />
+                    <div className="mt-2 h-24 w-24 relative">
+                      <Image src={r.image_url} alt={r.name} fill className="object-cover rounded" />
+                    </div>
                   ) : null}
                 </li>
               ))}

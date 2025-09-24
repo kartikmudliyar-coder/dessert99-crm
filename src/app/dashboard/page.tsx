@@ -89,6 +89,7 @@ export default async function DashboardPage() {
             <Link href="/tasks" className="px-3 py-1 rounded border">Go to Tasks</Link>
             <Link href="/notifications" className="px-3 py-1 rounded border">Go to Notifications</Link>
             {isOwner ? <Link href="/sales" className="px-3 py-1 rounded border">Go to Sales</Link> : null}
+            {isOwner ? <Link href="/onboarding" className="px-3 py-1 rounded border">Owner Onboarding</Link> : null}
           </div>
         </div>
       </div>
