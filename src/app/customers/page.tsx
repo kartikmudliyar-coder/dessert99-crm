@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import Navbar from '@/components/Navbar';
 import { redirect } from 'next/navigation';
+import type { Customer } from '@/types/supabase';
 
 export default async function CustomersPage() {
   const supabase = createSupabaseServerClient();
@@ -9,7 +10,7 @@ export default async function CustomersPage() {
 
   if (!session) redirect('/login');
 
-  const { data: customers } = await supabase.from('profiles').select('*');
+  const { data: customers } = await supabase.from('customers').select('*');
 
   return (
     <div className="h-screen flex flex-col">
@@ -17,9 +18,9 @@ export default async function CustomersPage() {
       <div className="flex-1 p-4">
         <h1 className="text-3xl font-bold mb-4">Customers</h1>
         <ul>
-          {customers?.map((c: any) => (
+          {customers?.map((c: Customer) => (
             <li key={c.id}>
-              {c.full_name} ({c.email ?? 'No email'})
+              {c.name} ({c.email ?? 'No email'})
             </li>
           ))}
         </ul>

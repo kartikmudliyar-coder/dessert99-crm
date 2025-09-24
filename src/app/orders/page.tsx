@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import Navbar from '@/components/Navbar';
 import { redirect } from 'next/navigation';
+import type { Order } from '@/types/supabase';
 
 export default async function OrdersPage() {
   const supabase = createSupabaseServerClient();
@@ -17,7 +18,7 @@ export default async function OrdersPage() {
       <div className="flex-1 p-4">
         <h1 className="text-3xl font-bold mb-4">Orders</h1>
         <ul>
-          {orders?.map((o: any) => (
+          {orders?.map((o: Order) => (
             <li key={o.id}>
               Order #{o.id} - {o.status}
             </li>
