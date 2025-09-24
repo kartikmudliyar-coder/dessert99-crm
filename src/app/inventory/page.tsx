@@ -15,6 +15,11 @@ export default async function InventoryPage() {
     .single();
 
   const franchiseId = profile?.franchise_id ?? null;
+  type InventoryRow = {
+    qty: number;
+    last_updated: string;
+    inventory_items: { name: string | null; sku: string | null; unit: string | null } | null;
+  };
   const { data: rows, error } = await supabase
     .from('inventory_levels')
     .select('qty, last_updated, inventory_items(name, sku, unit)')
@@ -42,7 +47,7 @@ export default async function InventoryPage() {
                 </tr>
               </thead>
               <tbody>
-                {rows?.map((r: any, idx: number) => (
+                {rows?.map((r: InventoryRow, idx: number) => (
                   <tr key={idx} className="border-t">
                     <td className="py-2">{r.inventory_items?.name}</td>
                     <td className="py-2">{r.inventory_items?.sku ?? '—'}</td>

@@ -14,8 +14,7 @@ export default async function NotificationsPage() {
     .eq('id', session.user.id)
     .single();
 
-  const role = profile?.role ?? 'staff';
-  const franchiseId = profile?.franchise_id ?? null;
+  // role and franchiseId reserved for future targeting UI
 
   // Read inbox: targeted by role/user/franchise (RLS handles filtering)
   const { data: notes, error } = await supabase
