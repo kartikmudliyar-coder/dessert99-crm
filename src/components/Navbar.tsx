@@ -42,8 +42,8 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="w-full bg-gray-100 p-4 flex justify-between items-center">
-      <Link href="/dashboard" className="font-semibold">
+    <nav className="w-full bg-brand-light p-4 flex justify-between items-center">
+      <Link href="/dashboard" className="font-semibold text-brand">
         Dessert99 CRM
       </Link>
 
@@ -57,8 +57,8 @@ export default function Navbar() {
           <Link href="/notifications">Notifications</Link>
           {role === 'owner' ? <Link href="/sales">Sales</Link> : null}
         </div>
-        {email ? <span className="text-sm">{role ? `${role} • ` : ''}Signed in as {email}</span> : null}
-        <button onClick={handleLogout} className="px-3 py-1 bg-red-500 text-white rounded">
+        {email ? <span className="text-sm text-gray-700">{role ? `${role} • ` : ''}Signed in as {email}</span> : null}
+        <button onClick={handleLogout} className="btn btn-danger">
           Logout
         </button>
       </div>

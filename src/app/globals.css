@@ -2,6 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Theme tokens */
+:root {
+  --brand: #E26D8A; /* dessert pink */
+  --brand-dark: #C85A75;
+  --brand-light: #FCE7EF;
+}
+
+/* Base typography and links */
+body {
+  @apply bg-gray-50 text-gray-900;
+}
+
+a {
+  @apply text-brand hover:text-brand-dark;
+}
+
+/* Reusable btn styles */
+.btn {
+  @apply inline-flex items-center justify-center rounded px-4 py-2 text-sm font-medium transition-colors;
+}
+.btn-primary {
+  @apply bg-brand text-white hover:bg-brand-dark;
+}
+.btn-secondary {
+  @apply bg-gray-700 text-white hover:bg-gray-800;
+}
+.btn-danger {
+  @apply bg-red-600 text-white hover:bg-red-700;
+}
+
+/* Card */
+.card {
+  @apply rounded border bg-white p-4 shadow-sm;
+}
+
+/* Table */
+.table thead tr {
+  @apply text-sm text-gray-600;
+}
+.table tbody tr {
+  @apply border-t;
+}
+
 html,
 body {
   padding: 0;
