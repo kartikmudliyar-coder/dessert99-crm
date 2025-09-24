@@ -7,6 +7,7 @@ export default function NewRecipeForm() {
   const supabase = createClientBrowser();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -15,12 +16,22 @@ export default function NewRecipeForm() {
     setSubmitting(true);
     setError(null);
     try {
+      let imageUrl: string | null = null;
+      if (imageFile) {
+        const path = `recipes/${Date.now()}-${imageFile.name}`;
+        const { error: upErr } = await supabase.storage.from('product images').upload(path, imageFile, { upsert: false });
+        if (upErr) throw upErr;
+        const { data: pub } = await supabase.storage.from('product images').getPublicUrl(path);
+        imageUrl = pub?.publicUrl ?? null;
+      }
+
       const { error: insertError } = await supabase
         .from("recipes")
-        .insert([{ name, description }]);
+        .insert([{ name, description, image_url: imageUrl }]);
       if (insertError) throw insertError;
       setName("");
       setDescription("");
+      setImageFile(null);
       // simple refresh to show new row
       window.location.reload();
     } catch (err: unknown) {
@@ -52,6 +63,10 @@ export default function NewRecipeForm() {
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
         />
+      </div>
+      <div>
+        <label className="block text-sm">Product Image (optional)</label>
+        <input type="file" accept="image/*" className="mt-1 w-full" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} />
       </div>
       <button
         type="submit"

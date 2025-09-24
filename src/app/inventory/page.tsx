@@ -1,7 +1,7 @@
 // src/app/inventory/page.tsx
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import Navbar from '@/components/Navbar';
-import { redirect } from 'next/navigation';
+import { redirect, cookies } from 'next/navigation';
 
 export default async function InventoryPage() {
   const supabase = createSupabaseServerClient();
@@ -28,16 +28,18 @@ export default async function InventoryPage() {
     .select('qty, last_updated, inventory_items(name, sku, unit)')
     .order('last_updated', { ascending: false });
 
-  const { data: rows, error } = isOwner
+  const scope = cookies().get('franchise_scope')?.value || '';
+  const scopedFranchise = scope || franchiseId;
+  const { data: rows, error } = isOwner && !scopedFranchise
     ? await baseQuery
-    : await baseQuery.eq('franchise_id', franchiseId as string);
+    : await baseQuery.eq('franchise_id', scopedFranchise as string);
 
   return (
     <div className="h-screen flex flex-col">
       <Navbar />
       <div className="p-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-semibold mb-4">Inventory</h1>
-        <p className="text-sm text-gray-600 mb-6">Franchise: {isOwner ? 'all' : (profile?.franchise_id ?? 'n/a')}</p>
+        <p className="text-sm text-gray-600 mb-6">Franchise: {isOwner ? (scope || 'all') : (profile?.franchise_id ?? 'n/a')}</p>
         <div className="rounded border p-4 bg-white">
           {error ? (
             <div className="text-red-600">Failed to load inventory.</div>

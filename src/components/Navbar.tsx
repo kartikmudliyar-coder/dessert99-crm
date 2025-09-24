@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClientBrowser } from '@/utils/supabase/client';
+import ScopeSelector from './ScopeSelector';
 
 export default function Navbar() {
   const supabase = createClientBrowser();
@@ -47,6 +48,7 @@ export default function Navbar() {
       </Link>
 
       <div className="flex items-center gap-4">
+        <ScopeSelector />
         <div className="hidden md:flex items-center gap-4">
           <Link href="/recipes">Recipes</Link>
           <Link href="/inventory">Inventory</Link>

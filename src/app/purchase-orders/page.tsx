@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import { redirect } from 'next/navigation';
 import NewPurchaseOrderForm from './NewPurchaseOrderForm';
 import StatusActions from './StatusActions';
+import NewReceiptUpload from './NewReceiptUpload';
 
 export default async function PurchaseOrdersPage() {
   const supabase = createSupabaseServerClient();
@@ -66,11 +67,14 @@ export default async function PurchaseOrdersPage() {
                     <td className="py-2">
                       <StatusActions id={po.id} current={po.status} role={role} />
                     </td>
+                    <td className="py-2">
+                      {(role === 'owner' || role === 'order_team') ? <NewReceiptUpload poId={po.id} /> : null}
+                    </td>
                   </tr>
                 ))}
                 {pos?.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-3 text-gray-500">No purchase orders yet.</td>
+                    <td colSpan={7} className="py-3 text-gray-500">No purchase orders yet.</td>
                   </tr>
                 ) : null}
               </tbody>

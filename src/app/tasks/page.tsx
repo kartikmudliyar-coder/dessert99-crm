@@ -1,7 +1,7 @@
 // src/app/tasks/page.tsx
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import Navbar from '@/components/Navbar';
-import { redirect } from 'next/navigation';
+import { redirect, cookies } from 'next/navigation';
 import MarkDoneButton from './MarkDoneButton';
 
 export default async function TasksPage() {
@@ -21,16 +21,18 @@ export default async function TasksPage() {
     .from('task_instances')
     .select('id, status, scheduled_for, completed_at, notes, franchise_id')
     .order('scheduled_for', { ascending: false });
-  const { data: tasks, error } = isOwner
+  const scope = cookies().get('franchise_scope')?.value || '';
+  const scopedFranchise = scope || franchiseId;
+  const { data: tasks, error } = isOwner && !scopedFranchise
     ? await baseQuery
-    : await baseQuery.eq('franchise_id', franchiseId as string);
+    : await baseQuery.eq('franchise_id', scopedFranchise as string);
 
   return (
     <div className="h-screen flex flex-col">
       <Navbar />
       <div className="p-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-semibold mb-4">Tasks</h1>
-        <p className="text-sm text-gray-600 mb-6">Franchise: {isOwner ? 'all' : (profile?.franchise_id ?? 'n/a')}</p>
+        <p className="text-sm text-gray-600 mb-6">Franchise: {isOwner ? (scope || 'all') : (profile?.franchise_id ?? 'n/a')}</p>
         <div className="rounded border p-4 bg-white">
           {error ? (
             <div className="text-red-600">Failed to load tasks.</div>

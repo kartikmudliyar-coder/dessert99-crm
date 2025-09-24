@@ -17,7 +17,7 @@ export default async function RecipesPage() {
 
   const { data: recipes, error } = await supabase
     .from('recipes')
-    .select('id, name, description, created_at')
+    .select('id, name, description, image_url, created_at')
     .order('created_at', { ascending: false });
 
   return (
@@ -40,6 +40,9 @@ export default async function RecipesPage() {
                 <li key={r.id} className="py-3">
                   <div className="font-medium">{r.name}</div>
                   <div className="text-sm text-gray-600">{r.description ?? '—'}</div>
+                  {r.image_url ? (
+                    <img src={r.image_url} alt={r.name} className="mt-2 h-24 w-24 object-cover rounded" />
+                  ) : null}
                 </li>
               ))}
               {recipes?.length === 0 ? (
