@@ -16,22 +16,25 @@ export async function POST() {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  // Insert minimal demo data if not present
-  type InsertResult = {
-    error: { message: string } | null;
-  } | null;
+  type SimpleResult = { ok: boolean; error?: string };
 
-  const ops: Array<Promise<InsertResult>> = [];
+  const ops: Array<Promise<SimpleResult>> = [];
 
-  ops.push(
-    supabase.from('recipes').insert([{ name: 'Chocolate Mousse', description: 'Rich, airy dessert.' }]).maybeSingle()
-  );
+  ops.push((async () => {
+    const { error } = await supabase
+      .from('recipes')
+      .insert([{ name: 'Chocolate Mousse', description: 'Rich, airy dessert.' }]);
+    return { ok: !error, error: error?.message };
+  })());
 
-  ops.push(
-    supabase.from('inventory_items').insert([{ name: 'Cocoa Powder', sku: 'COCOA-001', unit: 'kg' }]).maybeSingle()
-  );
+  ops.push((async () => {
+    const { error } = await supabase
+      .from('inventory_items')
+      .insert([{ name: 'Cocoa Powder', sku: 'COCOA-001', unit: 'kg' }]);
+    return { ok: !error, error: error?.message };
+  })());
 
-  const results = await Promise.allSettled(ops);
+  const results = await Promise.all(ops);
 
   return NextResponse.json({ ok: true, results });
 }
