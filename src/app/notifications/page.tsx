@@ -2,6 +2,7 @@
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import Navbar from '@/components/Navbar';
 import { redirect } from 'next/navigation';
+import Composer from './Composer';
 
 export default async function NotificationsPage() {
   const supabase = createSupabaseServerClient();
@@ -28,6 +29,9 @@ export default async function NotificationsPage() {
       <div className="p-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-semibold mb-4">Notifications</h1>
         <p className="text-sm text-gray-600 mb-6">Role: {profile?.role ?? 'unknown'}</p>
+        <div className="mb-6">
+          <Composer />
+        </div>
         <div className="rounded border p-4 bg-white">
           {error ? (
             <div className="text-red-600">Failed to load notifications.</div>
