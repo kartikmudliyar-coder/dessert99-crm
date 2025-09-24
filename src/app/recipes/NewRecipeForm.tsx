@@ -16,18 +16,17 @@ export default function NewRecipeForm() {
     setSubmitting(true);
     setError(null);
     try {
-      let imageUrl: string | null = null;
+      let imagePath: string | null = null;
       if (imageFile) {
         const path = `recipes/${Date.now()}-${imageFile.name}`;
         const { error: upErr } = await supabase.storage.from('product images').upload(path, imageFile, { upsert: false });
         if (upErr) throw upErr;
-        const { data: pub } = await supabase.storage.from('product images').getPublicUrl(path);
-        imageUrl = pub?.publicUrl ?? null;
+        imagePath = path;
       }
 
       const { error: insertError } = await supabase
         .from("recipes")
-        .insert([{ name, description, image_url: imageUrl }]);
+        .insert([{ name, description, image_path: imagePath }]);
       if (insertError) throw insertError;
       setName("");
       setDescription("");

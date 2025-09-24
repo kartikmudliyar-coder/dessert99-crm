@@ -2,6 +2,7 @@
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import Navbar from '@/components/Navbar';
 import Image from 'next/image';
+import RecipeImageActions from './RecipeImageActions';
 import { redirect } from 'next/navigation';
 import NewRecipeForm from './NewRecipeForm';
 
@@ -18,7 +19,7 @@ export default async function RecipesPage() {
 
   const { data: recipes, error } = await supabase
     .from('recipes')
-    .select('id, name, description, image_url, created_at')
+    .select('id, name, description, image_path, created_at')
     .order('created_at', { ascending: false });
 
   return (
@@ -41,9 +42,13 @@ export default async function RecipesPage() {
                 <li key={r.id} className="py-3">
                   <div className="font-medium">{r.name}</div>
                   <div className="text-sm text-gray-600">{r.description ?? '—'}</div>
-                  {r.image_url ? (
+                  {r.image_path ? (
                     <div className="mt-2 h-24 w-24 relative">
-                      <Image src={r.image_url} alt={r.name} fill className="object-cover rounded" />
+                      {/* Signed URL fetch is done client-side below for performance; fallback */}
+                      <Image src={`/api/recipes/image?id=${r.id}`} alt={r.name} fill className="object-cover rounded" />
+                      <div className="absolute -bottom-8 left-0">
+                        <RecipeImageActions id={r.id} imagePath={r.image_path} />
+                      </div>
                     </div>
                   ) : null}
                 </li>

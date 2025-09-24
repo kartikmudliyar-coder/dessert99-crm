@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import NewPurchaseOrderForm from './NewPurchaseOrderForm';
 import StatusActions from './StatusActions';
 import NewReceiptUpload from './NewReceiptUpload';
+import ReceiptLink from './ReceiptLink';
 
 export default async function PurchaseOrdersPage() {
   const supabase = createSupabaseServerClient();
@@ -54,6 +55,7 @@ export default async function PurchaseOrdersPage() {
                   <th className="py-2">Expected</th>
                   <th className="py-2">Franchise</th>
                   <th className="py-2">Actions</th>
+                  <th className="py-2">Receipt</th>
                 </tr>
               </thead>
               <tbody>

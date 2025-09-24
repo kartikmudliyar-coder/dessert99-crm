@@ -42,17 +42,50 @@ export default async function DashboardPage() {
     .eq('read', false);
   const notesUnreadCountPromise = notesBase; // RLS filters per role/user
 
-  const [recipesCountRes, poCountRes, tasksPendingRes, notesUnreadRes] = await Promise.all([
+  // Metrics: sales total (today), POs by status, tasks done today
+  const today = new Date().toISOString().slice(0, 10);
+  const salesBase = supabase
+    .from('sales')
+    .select('total_amount')
+    .gte('created_at', `${today}T00:00:00.000Z`)
+    .lte('created_at', `${today}T23:59:59.999Z`);
+  const salesRowsPromise = isOwner ? salesBase : salesBase.eq('franchise_id', franchiseId as string);
+
+  const poStatusBase = supabase
+    .from('purchase_orders')
+    .select('status')
+    .gte('created_at', `${today}T00:00:00.000Z`)
+    .lte('created_at', `${today}T23:59:59.999Z`);
+  const poStatusRowsPromise = isOwner ? poStatusBase : poStatusBase.eq('franchise_id', franchiseId as string);
+
+  const tasksDoneBase = supabase
+    .from('task_instances')
+    .select('id')
+    .eq('status', 'done')
+    .gte('completed_at', `${today}T00:00:00.000Z`)
+    .lte('completed_at', `${today}T23:59:59.999Z`);
+  const tasksDoneRowsPromise = isOwner ? tasksDoneBase : tasksDoneBase.eq('franchise_id', franchiseId as string);
+
+  const [recipesCountRes, poCountRes, tasksPendingRes, notesUnreadRes, salesRowsRes, poStatusRowsRes, tasksDoneRowsRes] = await Promise.all([
     recipesCountPromise,
     poCountPromise,
     tasksPendingCountPromise,
     notesUnreadCountPromise,
+    salesRowsPromise,
+    poStatusRowsPromise,
+    tasksDoneRowsPromise,
   ]);
 
   const recipesCount = recipesCountRes.count ?? 0;
   const poCount = poCountRes.count ?? 0;
   const tasksPending = tasksPendingRes.count ?? 0;
   const notesUnread = notesUnreadRes.count ?? 0;
+  const salesToday = (salesRowsRes.data as any[] | null)?.reduce((sum, r) => sum + Number(r.total_amount ?? 0), 0) ?? 0;
+  const poByStatus = (poStatusRowsRes.data as any[] | null)?.reduce((acc: Record<string, number>, r) => {
+    acc[r.status] = (acc[r.status] ?? 0) + 1;
+    return acc;
+  }, {}) ?? {};
+  const tasksDoneToday = (tasksDoneRowsRes.data as any[] | null)?.length ?? 0;
 
   return (
     <div className="h-screen flex flex-col">
@@ -78,6 +111,26 @@ export default async function DashboardPage() {
             <div className="text-sm text-gray-600">Unread Notifications</div>
             <div className="text-2xl font-semibold">{notesUnread}</div>
           </Link>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
+          <div className="rounded border p-4 bg-white">
+            <div className="text-sm text-gray-600 mb-1">Sales Today</div>
+            <div className="text-2xl font-semibold">₹{salesToday.toLocaleString()}</div>
+          </div>
+          <div className="rounded border p-4 bg-white">
+            <div className="text-sm text-gray-600 mb-2">POs by Status (Today)</div>
+            <div className="flex flex-wrap gap-2 text-sm">
+              {Object.keys(poByStatus).length === 0 ? <span className="text-gray-500">No POs</span> :
+                Object.entries(poByStatus).map(([k, v]) => (
+                  <span key={k} className="px-2 py-1 rounded border capitalize">{k}: {v as number}</span>
+                ))}
+            </div>
+          </div>
+          <div className="rounded border p-4 bg-white">
+            <div className="text-sm text-gray-600 mb-1">Tasks Done Today</div>
+            <div className="text-2xl font-semibold">{tasksDoneToday}</div>
+          </div>
         </div>
 
         <div className="rounded border p-4 bg-white">

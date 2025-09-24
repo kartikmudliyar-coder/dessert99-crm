@@ -2,6 +2,7 @@
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import Navbar from '@/components/Navbar';
 import { redirect } from 'next/navigation';
+import NoAccess from '@/components/NoAccess';
 import SalesEntry from './SalesEntry';
 
 export default async function SalesPage() {
@@ -22,7 +23,7 @@ export default async function SalesPage() {
       <Navbar />
       <div className="p-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-semibold mb-4">Sales</h1>
-        {isOwner ? <div className="mb-6"><SalesEntry /></div> : null}
+        {isOwner ? <div className="mb-6"><SalesEntry /></div> : <NoAccess message="Only owners can access Sales." />}
         <div className="rounded border p-4 bg-white">
           Coming soon: sales dashboard and reports.
         </div>
