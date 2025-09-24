@@ -22,7 +22,8 @@ export default async function TasksPage() {
     .from('task_instances')
     .select('id, status, scheduled_for, completed_at, notes, franchise_id')
     .order('scheduled_for', { ascending: false });
-  const scope = cookies().get('franchise_scope')?.value || '';
+  const cookieStore = await cookies();
+  const scope = cookieStore.get('franchise_scope')?.value || '';
   const scopedFranchise = scope || franchiseId;
   const { data: tasks, error } = isOwner && !scopedFranchise
     ? await baseQuery

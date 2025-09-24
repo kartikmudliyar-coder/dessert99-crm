@@ -29,7 +29,8 @@ export default async function InventoryPage() {
     .select('qty, last_updated, inventory_items(name, sku, unit)')
     .order('last_updated', { ascending: false });
 
-  const scope = cookies().get('franchise_scope')?.value || '';
+  const cookieStore = await cookies();
+  const scope = cookieStore.get('franchise_scope')?.value || '';
   const scopedFranchise = scope || franchiseId;
   const { data: rows, error } = isOwner && !scopedFranchise
     ? await baseQuery
