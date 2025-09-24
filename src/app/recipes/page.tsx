@@ -2,9 +2,7 @@
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import Navbar from '@/components/Navbar';
 import { redirect } from 'next/navigation';
-import dynamic from 'next/dynamic';
-
-const NewRecipeForm = dynamic(() => import('./NewRecipeForm'), { ssr: false });
+import NewRecipeForm from './NewRecipeForm';
 
 export default async function RecipesPage() {
   const supabase = createSupabaseServerClient();

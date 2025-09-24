@@ -2,9 +2,7 @@
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import Navbar from '@/components/Navbar';
 import { redirect } from 'next/navigation';
-import dynamic from 'next/dynamic';
-
-const NewPurchaseOrderForm = dynamic(() => import('./NewPurchaseOrderForm'), { ssr: false });
+import NewPurchaseOrderForm from './NewPurchaseOrderForm';
 
 export default async function PurchaseOrdersPage() {
   const supabase = createSupabaseServerClient();

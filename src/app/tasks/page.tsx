@@ -2,9 +2,7 @@
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import Navbar from '@/components/Navbar';
 import { redirect } from 'next/navigation';
-import dynamic from 'next/dynamic';
-
-const MarkDoneButton = dynamic(() => import('./MarkDoneButton'), { ssr: false });
+import MarkDoneButton from './MarkDoneButton';
 
 export default async function TasksPage() {
   const supabase = createSupabaseServerClient();
