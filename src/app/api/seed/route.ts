@@ -17,7 +17,11 @@ export async function POST() {
   }
 
   // Insert minimal demo data if not present
-  const ops: Array<Promise<any>> = [];
+  type InsertResult = {
+    error: { message: string } | null;
+  } | null;
+
+  const ops: Array<Promise<InsertResult>> = [];
 
   ops.push(
     supabase.from('recipes').insert([{ name: 'Chocolate Mousse', description: 'Rich, airy dessert.' }]).maybeSingle()
