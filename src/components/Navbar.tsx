@@ -50,12 +50,20 @@ export default function Navbar() {
       <div className="flex items-center gap-4">
         <ScopeSelector />
         <div className="hidden md:flex items-center gap-4">
+          {/* Everyone can view recipes */}
           <Link href="/recipes">Recipes</Link>
-          <Link href="/inventory">Inventory</Link>
-          <Link href="/purchase-orders">Purchase Orders</Link>
-          <Link href="/tasks">Tasks</Link>
+          {/* Owner, franchise_owner, shop_user see inventory and tasks */}
+          {role && ['owner','franchise_owner','shop_user'].includes(role) ? <Link href="/inventory">Inventory</Link> : null}
+          {role && ['owner','franchise_owner','shop_user'].includes(role) ? <Link href="/tasks">Tasks</Link> : null}
+          {/* Purchase Orders hidden from shop_user; shown to owner, franchise_owner, order_team */}
+          {role && ['owner','franchise_owner','order_team'].includes(role) ? <Link href="/purchase-orders">Purchase Orders</Link> : null}
+          {/* Notifications visible to all */}
           <Link href="/notifications">Notifications</Link>
+          {/* Attendance for shop users and above */}
+          {role && ['owner','franchise_owner','shop_user'].includes(role) ? <Link href="/attendance">Attendance</Link> : null}
+          {/* Owner-only */}
           {role === 'owner' ? <Link href="/sales">Sales</Link> : null}
+          {role === 'owner' ? <Link href="/onboarding">Onboarding</Link> : null}
         </div>
         {email ? <span className="text-sm text-gray-700">{role ? `${role} • ` : ''}Signed in as {email}</span> : null}
         <button onClick={handleLogout} className="btn btn-danger">
