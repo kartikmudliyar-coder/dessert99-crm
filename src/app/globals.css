@@ -11,7 +11,7 @@
 
 /* Base typography and links */
 body {
-  @apply bg-gray-50 text-gray-900;
+  @apply bg-brand-light text-gray-900;
 }
 
 a {
