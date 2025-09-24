@@ -1,17 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* Theme tokens */
-:root {
-  --brand: #E26D8A; /* dessert pink */
-  --brand-dark: #C85A75;
-  --brand-light: #FCE7EF;
+@theme {
+  --color-brand: #E26D8A; /* dessert pink */
+  --color-brand-dark: #C85A75;
+  --color-brand-light: #FCE7EF;
 }
 
 /* Base typography and links */
 body {
-  @apply bg-brand-light text-gray-900;
+  background-color: var(--color-brand-light);
+  color: rgb(17 24 39);
 }
 
 a {
@@ -23,7 +21,8 @@ a {
   @apply inline-flex items-center justify-center rounded px-4 py-2 text-sm font-medium transition-colors;
 }
 .btn-primary {
-  @apply bg-brand text-white hover:bg-brand-dark;
+  background-color: var(--color-brand);
+  color: white;
 }
 .btn-secondary {
   @apply bg-gray-700 text-white hover:bg-gray-800;

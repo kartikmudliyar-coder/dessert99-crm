@@ -42,8 +42,8 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="w-full bg-brand-light p-4 flex justify-between items-center">
-      <Link href="/dashboard" className="font-semibold text-brand">
+    <nav className="w-full bg-[--color-brand-light] p-4 flex justify-between items-center">
+      <Link href="/dashboard" className="font-semibold text-[--color-brand]">
         Dessert99 CRM
       </Link>
 
