@@ -10,13 +10,24 @@ export default function Navbar() {
   const supabase = createClientBrowser();
   const router = useRouter();
   const [email, setEmail] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
     async function load() {
       const { data } = await supabase.auth.getUser();
       if (!mounted) return;
-      setEmail(data?.user?.email ?? null);
+      const user = data?.user ?? null;
+      setEmail(user?.email ?? null);
+      if (user?.id) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+        if (!mounted) return;
+        setRole(profile?.role ?? null);
+      }
     }
     load();
     return () => {
@@ -36,7 +47,15 @@ export default function Navbar() {
       </Link>
 
       <div className="flex items-center gap-4">
-        {email ? <span className="text-sm">Signed in as {email}</span> : null}
+        <div className="hidden md:flex items-center gap-4">
+          <Link href="/recipes">Recipes</Link>
+          <Link href="/inventory">Inventory</Link>
+          <Link href="/purchase-orders">Purchase Orders</Link>
+          <Link href="/tasks">Tasks</Link>
+          <Link href="/notifications">Notifications</Link>
+          {role === 'owner' ? <Link href="/sales">Sales</Link> : null}
+        </div>
+        {email ? <span className="text-sm">{role ? `${role} • ` : ''}Signed in as {email}</span> : null}
         <button onClick={handleLogout} className="px-3 py-1 bg-red-500 text-white rounded">
           Logout
         </button>

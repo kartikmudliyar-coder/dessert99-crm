@@ -1,12 +1,13 @@
-import { supabaseServer } from '@/lib/supabaseServer';
 import { NextResponse } from 'next/server';
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
 
 export async function GET() {
-  const { data: user, error } = await supabaseServer.auth.getUser();
+  const supabase = createSupabaseServerClient();
+  const { data, error } = await supabase.auth.getUser();
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 
-  return NextResponse.json(user);
+  return NextResponse.json(data);
 }
