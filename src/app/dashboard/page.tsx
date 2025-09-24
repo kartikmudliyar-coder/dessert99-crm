@@ -104,7 +104,7 @@ export default async function DashboardPage() {
             <div className="text-2xl font-semibold">{recipesCount}</div>
           </Link>
           <Link href="/purchase-orders" className="block card hover:bg-gray-50">
-            <div className="text-sm text-gray-600">Purchase Orders</div>
+            <div className="text-sm text-gray-600">Raw Material Orders</div>
             <div className="text-2xl font-semibold">{poCount}</div>
           </Link>
           <Link href="/tasks" className="block card hover:bg-gray-50">
@@ -142,7 +142,7 @@ export default async function DashboardPage() {
           <div className="flex flex-wrap gap-3 text-sm">
             <Link href="/recipes" className="btn btn-secondary">Go to Recipes</Link>
             <Link href="/inventory" className="btn btn-secondary">Go to Inventory</Link>
-            <Link href="/purchase-orders" className="btn btn-secondary">Go to Purchase Orders</Link>
+            <Link href="/purchase-orders" className="btn btn-secondary">Go to Raw Material Orders</Link>
             <Link href="/tasks" className="btn btn-secondary">Go to Tasks</Link>
             <Link href="/notifications" className="btn btn-secondary">Go to Notifications</Link>
             {isOwner ? <Link href="/sales" className="btn btn-secondary">Go to Sales</Link> : null}

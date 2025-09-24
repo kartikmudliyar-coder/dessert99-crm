@@ -36,7 +36,7 @@ export default async function PurchaseOrdersPage() {
     <div className="h-screen flex flex-col">
       <Navbar />
       <div className="p-6 max-w-5xl mx-auto w-full">
-        <h1 className="text-2xl font-semibold mb-4">Purchase Orders</h1>
+        <h1 className="text-2xl font-semibold mb-4">Raw Material Orders</h1>
         <p className="text-sm text-gray-600 mb-6">Role: {profile?.role ?? 'unknown'}</p>
         {(role === 'owner' || role === 'franchise_owner' || role === 'shop_user') && (
           <div className="mb-6">
