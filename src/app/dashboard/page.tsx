@@ -99,30 +99,30 @@ export default async function DashboardPage() {
         <p className="mb-6 text-gray-700">Welcome, {session.user.email} {isOwner ? '(owner)' : ''}</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <Link href="/recipes" className="block rounded border p-4 bg-white hover:bg-gray-50">
+          <Link href="/recipes" className="block card hover:bg-gray-50">
             <div className="text-sm text-gray-600">Recipes</div>
             <div className="text-2xl font-semibold">{recipesCount}</div>
           </Link>
-          <Link href="/purchase-orders" className="block rounded border p-4 bg-white hover:bg-gray-50">
+          <Link href="/purchase-orders" className="block card hover:bg-gray-50">
             <div className="text-sm text-gray-600">Purchase Orders</div>
             <div className="text-2xl font-semibold">{poCount}</div>
           </Link>
-          <Link href="/tasks" className="block rounded border p-4 bg-white hover:bg-gray-50">
+          <Link href="/tasks" className="block card hover:bg-gray-50">
             <div className="text-sm text-gray-600">Pending Tasks</div>
             <div className="text-2xl font-semibold">{tasksPending}</div>
           </Link>
-          <Link href="/notifications" className="block rounded border p-4 bg-white hover:bg-gray-50">
+          <Link href="/notifications" className="block card hover:bg-gray-50">
             <div className="text-sm text-gray-600">Unread Notifications</div>
             <div className="text-2xl font-semibold">{notesUnread}</div>
           </Link>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
-          <div className="rounded border p-4 bg-white">
+          <div className="card">
             <div className="text-sm text-gray-600 mb-1">Sales Today</div>
             <div className="text-2xl font-semibold">₹{salesToday.toLocaleString()}</div>
           </div>
-          <div className="rounded border p-4 bg-white">
+          <div className="card">
             <div className="text-sm text-gray-600 mb-2">POs by Status (Today)</div>
             <div className="flex flex-wrap gap-2 text-sm">
               {Object.keys(poByStatus).length === 0 ? <span className="text-gray-500">No POs</span> :
@@ -131,22 +131,22 @@ export default async function DashboardPage() {
                 ))}
             </div>
           </div>
-          <div className="rounded border p-4 bg-white">
+          <div className="card">
             <div className="text-sm text-gray-600 mb-1">Tasks Done Today</div>
             <div className="text-2xl font-semibold">{tasksDoneToday}</div>
           </div>
         </div>
 
-        <div className="rounded border p-4 bg-white">
+        <div className="card">
           <div className="mb-3 font-semibold">Quick links</div>
           <div className="flex flex-wrap gap-3 text-sm">
-            <Link href="/recipes" className="px-3 py-1 rounded border">Go to Recipes</Link>
-            <Link href="/inventory" className="px-3 py-1 rounded border">Go to Inventory</Link>
-            <Link href="/purchase-orders" className="px-3 py-1 rounded border">Go to Purchase Orders</Link>
-            <Link href="/tasks" className="px-3 py-1 rounded border">Go to Tasks</Link>
-            <Link href="/notifications" className="px-3 py-1 rounded border">Go to Notifications</Link>
-            {isOwner ? <Link href="/sales" className="px-3 py-1 rounded border">Go to Sales</Link> : null}
-            {isOwner ? <Link href="/onboarding" className="px-3 py-1 rounded border">Owner Onboarding</Link> : null}
+            <Link href="/recipes" className="btn btn-secondary">Go to Recipes</Link>
+            <Link href="/inventory" className="btn btn-secondary">Go to Inventory</Link>
+            <Link href="/purchase-orders" className="btn btn-secondary">Go to Purchase Orders</Link>
+            <Link href="/tasks" className="btn btn-secondary">Go to Tasks</Link>
+            <Link href="/notifications" className="btn btn-secondary">Go to Notifications</Link>
+            {isOwner ? <Link href="/sales" className="btn btn-secondary">Go to Sales</Link> : null}
+            {isOwner ? <Link href="/onboarding" className="btn btn-secondary">Owner Onboarding</Link> : null}
           </div>
         </div>
       </div>

@@ -42,7 +42,7 @@ export default function NewRecipeForm() {
   };
 
   return (
-    <form onSubmit={onSubmit} className="rounded border p-4 bg-white space-y-3">
+    <form onSubmit={onSubmit} className="card space-y-3">
       <div className="font-medium">Create Recipe</div>
       {error ? <div className="text-red-600 text-sm">{error}</div> : null}
       <div>
@@ -69,7 +69,7 @@ export default function NewRecipeForm() {
       </div>
       <button
         type="submit"
-        className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-60"
+        className="btn btn-primary disabled:opacity-60"
         disabled={submitting}
       >
         {submitting ? "Creating..." : "Create"}

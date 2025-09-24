@@ -33,7 +33,7 @@ export default async function RecipesPage() {
             <NewRecipeForm />
           </div>
         )}
-        <div className="rounded border p-4 bg-white">
+        <div className="card">
           {error ? (
             <div className="text-red-600">Failed to load recipes.</div>
           ) : (

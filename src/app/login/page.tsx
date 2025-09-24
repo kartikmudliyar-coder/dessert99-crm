@@ -5,7 +5,7 @@ import { loginAction } from './actions';
 
 export default function LoginPage() {
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow">
+    <div className="max-w-md mx-auto mt-20 card">
       <h2 className="text-2xl font-semibold mb-4">Dessert99 — Sign in</h2>
 
       <form action={loginAction}>
@@ -31,7 +31,7 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+          className="btn btn-primary w-full"
         >
           Sign In
         </button>
