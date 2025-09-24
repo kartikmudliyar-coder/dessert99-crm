@@ -15,23 +15,27 @@ export default async function InventoryPage() {
     .single();
 
   const franchiseId = profile?.franchise_id ?? null;
+  const isOwner = profile?.role === 'owner';
   type InventoryRow = {
     qty: number;
     last_updated: string;
     inventory_items: { name: string | null; sku: string | null; unit: string | null } | null;
   };
-  const { data: rows, error } = await supabase
+  const baseQuery = supabase
     .from('inventory_levels')
     .select('qty, last_updated, inventory_items(name, sku, unit)')
-    .eq('franchise_id', franchiseId as string)
     .order('last_updated', { ascending: false });
+
+  const { data: rows, error } = isOwner
+    ? await baseQuery
+    : await baseQuery.eq('franchise_id', franchiseId as string);
 
   return (
     <div className="h-screen flex flex-col">
       <Navbar />
       <div className="p-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-semibold mb-4">Inventory</h1>
-        <p className="text-sm text-gray-600 mb-6">Franchise: {profile?.franchise_id ?? 'n/a'}</p>
+        <p className="text-sm text-gray-600 mb-6">Franchise: {isOwner ? 'all' : (profile?.franchise_id ?? 'n/a')}</p>
         <div className="rounded border p-4 bg-white">
           {error ? (
             <div className="text-red-600">Failed to load inventory.</div>

@@ -16,18 +16,21 @@ export default async function TasksPage() {
     .single();
 
   const franchiseId = profile?.franchise_id ?? null;
-  const { data: tasks, error } = await supabase
+  const isOwner = profile?.role === 'owner';
+  const baseQuery = supabase
     .from('task_instances')
-    .select('id, status, scheduled_for, completed_at, notes')
-    .eq('franchise_id', franchiseId as string)
+    .select('id, status, scheduled_for, completed_at, notes, franchise_id')
     .order('scheduled_for', { ascending: false });
+  const { data: tasks, error } = isOwner
+    ? await baseQuery
+    : await baseQuery.eq('franchise_id', franchiseId as string);
 
   return (
     <div className="h-screen flex flex-col">
       <Navbar />
       <div className="p-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-semibold mb-4">Tasks</h1>
-        <p className="text-sm text-gray-600 mb-6">Franchise: {profile?.franchise_id ?? 'n/a'}</p>
+        <p className="text-sm text-gray-600 mb-6">Franchise: {isOwner ? 'all' : (profile?.franchise_id ?? 'n/a')}</p>
         <div className="rounded border p-4 bg-white">
           {error ? (
             <div className="text-red-600">Failed to load tasks.</div>
