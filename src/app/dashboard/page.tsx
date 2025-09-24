@@ -80,12 +80,16 @@ export default async function DashboardPage() {
   const poCount = poCountRes.count ?? 0;
   const tasksPending = tasksPendingRes.count ?? 0;
   const notesUnread = notesUnreadRes.count ?? 0;
-  const salesToday = (salesRowsRes.data as any[] | null)?.reduce((sum, r) => sum + Number(r.total_amount ?? 0), 0) ?? 0;
-  const poByStatus = (poStatusRowsRes.data as any[] | null)?.reduce((acc: Record<string, number>, r) => {
+  type SalesRow = { total_amount: number | string | null };
+  type PoRow = { status: string };
+  type TaskRow = { id: string };
+
+  const salesToday = (salesRowsRes.data as SalesRow[] | null)?.reduce((sum, r) => sum + Number(r.total_amount ?? 0), 0) ?? 0;
+  const poByStatus = (poStatusRowsRes.data as PoRow[] | null)?.reduce((acc: Record<string, number>, r: PoRow) => {
     acc[r.status] = (acc[r.status] ?? 0) + 1;
     return acc;
-  }, {}) ?? {};
-  const tasksDoneToday = (tasksDoneRowsRes.data as any[] | null)?.length ?? 0;
+  }, {} as Record<string, number>) ?? {};
+  const tasksDoneToday = (tasksDoneRowsRes.data as TaskRow[] | null)?.length ?? 0;
 
   return (
     <div className="h-screen flex flex-col">
