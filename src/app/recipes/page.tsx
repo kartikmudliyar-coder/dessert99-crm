@@ -1,4 +1,5 @@
 // src/app/recipes/page.tsx
+import AddRecipeButton from '@/components/AddRecipeButton';
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import Navbar from '@/components/Navbar';
 import Image from 'next/image';
@@ -28,8 +29,8 @@ export default async function RecipesPage() {
       <div className="p-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-semibold mb-4">Recipes</h1>
         <p className="text-sm text-gray-600 mb-6">Role: {profile?.role ?? 'unknown'}</p>
-        {(profile?.role === 'owner' || profile?.role === 'franchise_owner') && (
-          <div className="mb-6">
+{profile?.role === 'owner' && (
+  <div className="mb-6">
             <NewRecipeForm />
           </div>
         )}
